@@ -2,6 +2,8 @@
 
 A Cloudflare Worker implementation of Server-Sent Events (SSE) with dynamic content updates and repeating events. This project implements Datastar's SSE protocol using Mustache for templating and a minimal Cloudflare router library. It provides a lightweight, efficient way to handle real-time updates in a Cloudflare Workers environment.
 
+> **Note:** This project is currently experimental and serves as a Proof of Concept (POC). It may not be suitable for production use and is subject to change. Use it at your own risk.
+
 ## Features
 
 - Server-Sent Events (SSE) implementation
