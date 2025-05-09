@@ -175,3 +175,5 @@ dist
 worker-configuration.d.ts
 .dev.vars
 .wrangler/
+
+.vscode/
