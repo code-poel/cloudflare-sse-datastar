@@ -1,6 +1,6 @@
 {
-	"name": "sse-router-experiment",
-	"version": "0.0.0",
+	"name": "cloudflare-sse-datastar",
+	"version": "0.0.1",
 	"private": true,
 	"scripts": {
 		"deploy": "wrangler deploy",
