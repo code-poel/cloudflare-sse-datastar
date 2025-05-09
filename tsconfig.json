@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "types": [],
+    "lib": ["ES2021"],
+    "paths": {
+      "@packages/*": ["./packages/*"]
+    },
+    "allowJs": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
+  "exclude": ["test"],
+  "include": ["./worker-configuration.d.ts", "src/**/*.ts", "src/**/*.mustache", "types/**/*.d.ts"]
+}
