@@ -271,32 +271,3 @@ npm run test:coverage
 # Run specific test file
 npm test test/mergeFragments.spec.ts
 ```
-
-### Writing Tests
-
-When adding new tests:
-1. Create a new `.spec.ts` file in the `test` directory
-2. Import necessary dependencies and mocks
-3. Use the `describe` and `it` blocks for organization
-4. Mock any external dependencies
-5. Clean up resources in `afterEach` blocks
-6. Handle streams properly for SSE endpoints
-
-Example test structure:
-```typescript
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-
-describe('Feature', () => {
-  beforeEach(() => {
-    // Setup mocks and test environment
-  });
-
-  afterEach(() => {
-    // Clean up resources
-  });
-
-  it('should handle specific case', async () => {
-    // Test implementation
-  });
-});
-``` 
