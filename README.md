@@ -21,6 +21,30 @@ A Cloudflare Worker implementation of Server-Sent Events (SSE). This project imp
 - Automatic HTML minification
 - Built-in CORS support
 
+### Demo Frontend
+
+<div style="display: flex; gap: 2rem; align-items: start;">
+<div>
+
+The project includes a demo frontend that showcases all the major features of the SSE implementation. The demo provides interactive examples of:
+
+- Real-time clock updates using repeating events
+- Dynamic content merging with different selectors
+- Signal state management
+- Script execution
+- Fragment and signal removal
+- Heartbeat monitoring
+
+You can run the demo locally by following the development instructions below.
+
+</div>
+<div>
+
+![Demo Frontend Screenshot](public/demo-screenshot.png)
+
+</div>
+</div>
+
 ## Dependencies
 
 ### Core Libraries
