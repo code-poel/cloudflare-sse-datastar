@@ -27,7 +27,8 @@ function getListingMarkup(): string {
 router.get('/merge-fragments', async () => {
   const event = mergeFragments({
     fragment: getListingMarkup(),
-    selector: '#listing'
+    selector: '#listing',
+    mergeMode: 'inner'
   });
   return createSSEResponse([event]);
 });
@@ -44,7 +45,10 @@ router.get('/merge-fragments-repeating', async () => {
 router.get('/merge-signals', async () => {
   const event = mergeSignals({
     signals: {
-      foo: 'merged'
+      foo: 'merged',
+      nested: {
+        baz: 'merged'
+      }
     }
   });
   return createSSEResponse([event]);
@@ -52,7 +56,7 @@ router.get('/merge-signals', async () => {
 
 router.get('/remove-fragments', async () => {
   const removeEvent = removeFragments({
-    selector: '#listing'
+    selector: '#content-to-remove'
   });
   return createSSEResponse([removeEvent]);
 });
@@ -92,6 +96,14 @@ router.get('/heartbeat', async () => {
   };
 
   return createSSEResponse([timestampEvent]);
+});
+
+router.get('/clock', async () => {
+  const event = mergeFragments({
+    fragment: () => `<div id="clock">${new Date().toLocaleTimeString('en-US', { hour12: false })}:${new Date().getMilliseconds()}</div>`
+  });
+  const repeatEvent = repeatingEvent(event, 150);
+  return createSSEResponse([repeatEvent]);
 });
 
 export default {

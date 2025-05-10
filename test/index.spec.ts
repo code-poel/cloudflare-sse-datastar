@@ -83,7 +83,7 @@ describe('SSE Router', () => {
 		expect(response.headers.get('content-type')).toBe('text/event-stream');
 		const text = await response.text();
 		expect(text).toContain('event: datastar-remove-fragments');
-		expect(text).toContain('data: selector #listing');
+		expect(text).toContain('data: selector #content-to-remove');
 	});
 
 	it('handles remove-signals endpoint', async () => {

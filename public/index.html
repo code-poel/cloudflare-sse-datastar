@@ -1,11 +1,95 @@
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading">Hello, World!</h1>
-	</body>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
+  </head>
+  <body 
+		data-signals="{ debug: true, foo: 'bar', bar: 'baz', nested: { foo: 'bar', bar: 'baz' } }"
+		data-on-load="@get('/clock')"
+	>
+
+		<div class="h-dvh mx-5">
+			<header class="h-20 flex items-center justify-between">
+				<h1 class="font-bold text-2xl mt-0">Datastar Demo</h1>
+				<button data-on-click="$debug = !$debug" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+					Toggle Debug Panel
+				</button>
+			</header>
+			<div class="flex flex-row gap-5 h-[calc(100vh-6rem)]">
+				<main class="flex-auto bg-blue-100 p-5 overflow-x-auto">
+					<h2>Examples</h2>
+					<!-- datastar-recurring -->
+					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
+						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This event will contain markup to add to the DOM.</p>
+						<div class="flex flex-row gap-2">
+							<div class="w-1/4">
+								<button class="bg-blue-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
+									Long-Running Task
+								</button>
+							</div>
+							<div class="bg-gray-900 text-gray-100 font-mono p-4 rounded-lg w-3/4 border border-gray-700">
+								<div class="whitespace-pre"><span id="clock">--</span></div>
+							</div>
+						</div>
+					</div>
+					<!-- /datastar-recurring -->
+					<!-- datastar-merge-fragments -->
+					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
+						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This event will contain markup to add to the DOM.</p>
+						<div class="flex flex-row gap-2">
+							<div class="w-1/4">
+								<button data-on-click="@get('/merge-fragments')" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+									datastar-merge-fragments
+								</button>
+							</div>
+							<div class="bg-gray-900 text-gray-100 font-mono p-4 rounded-lg w-3/4 border border-gray-700">
+								<div id="listing" class="whitespace-pre"></div>
+							</div>
+						</div>
+					</div>
+					<!-- /datastar-merge-fragments -->
+					<!-- datastar-remove-fragments -->
+					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
+						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This event will contain markup to add to the DOM.</p>
+						<div class="flex flex-row gap-2">
+							<div class="w-1/4">
+								<button data-on-click="@get('/remove-fragments')" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+									datastar-remove-fragments
+								</button>
+							</div>
+							<div class="bg-gray-900 text-gray-100 font-mono p-4 rounded-lg w-3/4 border border-gray-700">
+								<div class="whitespace-pre"><span id="content-to-remove">Content to be removed.</span></div>
+							</div>
+						</div>
+					</div>
+					<!-- /datastar-remove-fragments -->
+					<!-- datastar-merge-signals -->
+					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
+						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This event will contain markup to add to the DOM.</p>
+						<div class="flex flex-row gap-2">
+							<div class="w-1/4">
+								<button data-on-click="@get('/merge-signals')" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+									datastar-merge-signals
+								</button>
+							</div>
+							<div class="bg-gray-900 text-gray-100 font-mono p-4 rounded-lg w-3/4 border border-gray-700">
+								<div class="text-slate-400">
+									<span class="whitespace-pre" data-text="ctx.signals.JSON()" data-on-signal-change="ctx.el.textContent = ctx.signals.JSON()">{</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /datastar-merge-signals -->
+				</main>
+				<aside class="w-xs min-w-xs max-w-xs bg-slate-100 p-5 text-xs text-green-900 overflow-y-auto" data-show="$debug">
+					<pre data-text="ctx.signals.JSON()" data-on-signal-change="ctx.el.textContent = ctx.signals.JSON()">Signals</pre>
+				</aside>
+			</div>
+		</div>
+
+  </body>
 </html>
