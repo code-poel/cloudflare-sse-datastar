@@ -1,36 +1,12 @@
 # Cloudflare Worker: SSE, Datastar and Mustache.
 
-A Cloudflare Worker implementation of Server-Sent Events (SSE). This project implements Datastar's SSE protocol, includes Mustache for simple templating and uses a minimalist Cloudflare router library.  The purpose of this project is to test the viability of using Cloudflare workers to drive a Datastar website.  This is bare-bones.  Future updates will focus on:
-
-- Streaming live Supabase database updates through SSE out to a frontend via a long-running connection
-- Integration with Cloudflare Pub/Sub or NATS
-- Some Ai experimentation (why not, it's all the rage)
+This repository an implementation of Datastar driven by a Cloudflare static asset worker sending Server Sent Events.  It leverages a bare-bones router and Mustache for template rendering (if necessary).
 
 > **Note:** This project is currently experimental and serves as a Proof of Concept (POC). It may not be suitable for production use and is subject to change. Use it at your own risk.
 
-## Features
-
-- Server-Sent Events (SSE) implementation
-- Dynamic content updates using fragments
-- Repeating events with customizable intervals
-- Support for both static and dynamic content
-- HTML fragment merging with selectors
-- Signal updates for client-side state management
-- Script execution with customizable attributes
-- Fragment and signal removal capabilities
-- Automatic HTML minification
-- Built-in CORS support
-
 ### Demo Frontend
 
-The project includes a demo frontend that showcases all the major features of the SSE implementation. The demo provides interactive examples of:
-
-- Real-time clock updates using repeating events
-- Dynamic content merging with different selectors
-- Signal state management
-- Script execution
-- Fragment and signal removal
-- Heartbeat monitoring
+The project includes a demo frontend that showcases some features of the SSE implementation. The demo provides interactive examples.
 
 You can run the demo locally by following the development instructions below.
 
@@ -40,15 +16,19 @@ You can run the demo locally by following the development instructions below.
 
 ### Core Libraries
 - `@tsndr/cloudflare-worker-router`: Lightweight router for Cloudflare Workers with TypeScript support
-- `mustache`: Logic-less templating engine for rendering HTML templates
+- `@janl/mustache.js`: Logic-less templating engine for rendering HTML templates
 - `@cloudflare/workers-types`: TypeScript definitions for Cloudflare Workers
 
 ### Custom Utilities
+
+#### atastar Specific
 - `mergeFragments`: Utility for merging HTML fragments with client-side DOM
 - `mergeSignals`: Utility for managing client-side state updates
 - `removeFragments`: Utility for removing HTML elements from the DOM
 - `removeSignals`: Utility for removing signals from client-side state
 - `executeScript`: Utility for executing JavaScript code on the client side
+
+#### Wokrer / SSE Specific
 - `repeatingEvent`: Helper for creating repeating SSE events
 - `createSSEResponse`: Utility for creating Server-Sent Events responses
 
@@ -96,7 +76,7 @@ data: script <javascript-code>
 ## Implementation Details
 
 ### HTML Minification
-All HTML fragments are automatically minified before being sent to the client. The minification process attempts to:
+All HTML fragments pushed through the `mergeFragments` event type are automatically minified before being sent to the client. The minification process attempts to:
 - Remove unnecessary whitespace
 - Preserve essential whitespace in text content
 - Maintain HTML structure and functionality
@@ -120,7 +100,7 @@ The `/heartbeat` endpoint demonstrates this with a custom event that:
 - Implements a custom `format()` method
 - Includes repeating functionality
 
-## Available Endpoints
+## Available Datastar Example Endpoints
 
 ### /merge-fragments
 Updates HTML content with static content.
