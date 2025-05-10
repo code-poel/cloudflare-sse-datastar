@@ -1,4 +1,4 @@
-# Cloudflare Worker Example of SSE, Datastar and Mustache.
+# Cloudflare Worker: SSE, Datastar and Mustache.
 
 A Cloudflare Worker implementation of Server-Sent Events (SSE). This project implements Datastar's SSE protocol, includes Mustache for simple templating and uses a minimalist Cloudflare router library.  The purpose of this project is to test the viability of using Cloudflare workers to drive a Datastar website.  This is bare-bones.  Future updates will focus on:
 
@@ -37,9 +37,9 @@ A Cloudflare Worker implementation of Server-Sent Events (SSE). This project imp
 - `repeatingEvent`: Helper for creating repeating SSE events
 - `createSSEResponse`: Utility for creating Server-Sent Events responses
 
-## SSE Protocol
+## Datastar Event Types
 
-Our implementation uses a custom SSE protocol format for each event type:
+The worker supports all (as of this writing) Datastar server sent event types.  These include:
 
 ### Merge Fragments
 ```
@@ -81,16 +81,10 @@ data: script <javascript-code>
 ## Implementation Details
 
 ### HTML Minification
-All HTML fragments are automatically minified before being sent to the client. This reduces bandwidth usage and improves performance. The minification process:
-- Removes unnecessary whitespace
-- Preserves essential whitespace in text content
-- Maintains HTML structure and functionality
-
-### CORS Support
-The router includes built-in CORS support, allowing cross-origin requests. This is essential for:
-- Development environments
-- Cross-domain API access
-- Integration with different frontend applications
+All HTML fragments are automatically minified before being sent to the client. The minification process attempts to:
+- Remove unnecessary whitespace
+- Preserve essential whitespace in text content
+- Maintain HTML structure and functionality
 
 ### Custom Event Types
 While we provide factory functions for common event types, you can create custom events by implementing the `Event` interface:
