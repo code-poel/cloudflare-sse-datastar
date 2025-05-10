@@ -16,9 +16,32 @@ export function formatSSE(type: string, data: Record<string, any>): string {
   // Handle other data fields
   Object.entries(data).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      if (typeof value === 'object') {
+      // Special handling for arrays that need to be output as separate lines
+      if (Array.isArray(value)) {
+        if (key === 'paths') {
+          // Each path gets its own line
+          value.forEach(path => {
+            lines.push(`data: paths ${path}`);
+          });
+        } else if (key === 'attributes') {
+          // Each attribute gets its own line
+          value.forEach(attr => {
+            lines.push(`data: attributes ${attr.name} ${attr.value}`);
+          });
+        } else if (key === 'scripts') {
+          // Each script gets its own line
+          value.forEach(script => {
+            lines.push(`data: script ${script}`);
+          });
+        } else {
+          // Default array handling
+          lines.push(`data: ${key} ${JSON.stringify(value)}`);
+        }
+      } else if (typeof value === 'object') {
+        // Handle objects (like signals)
         lines.push(`data: ${key} ${JSON.stringify(value)}`);
       } else {
+        // Handle primitive values
         lines.push(`data: ${key} ${value}`);
       }
     }

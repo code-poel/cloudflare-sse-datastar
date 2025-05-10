@@ -32,6 +32,42 @@ describe('formatSSE', () => {
     expect(result).not.toContain('foo');
     expect(result).not.toContain('bar');
   });
+
+  it('handles paths array correctly', () => {
+    const result = formatSSE('test-event', { paths: ['foo.bar', 'baz'] });
+    expect(result).toContain('data: paths foo.bar');
+    expect(result).toContain('data: paths baz');
+    expect(result).not.toContain('["foo.bar","baz"]');
+  });
+
+  it('handles attributes array correctly', () => {
+    const result = formatSSE('test-event', {
+      attributes: [
+        { name: 'type', value: 'module' },
+        { name: 'defer', value: true }
+      ]
+    });
+    expect(result).toContain('data: attributes type module');
+    expect(result).toContain('data: attributes defer true');
+    expect(result).not.toContain('[{"name":"type","value":"module"}]');
+  });
+
+  it('handles scripts array correctly', () => {
+    const result = formatSSE('test-event', {
+      scripts: [
+        'console.log("test")',
+        'alert("hello")'
+      ]
+    });
+    expect(result).toContain('data: script console.log("test")');
+    expect(result).toContain('data: script alert("hello")');
+    expect(result).not.toContain('["console.log(\\"test\\")"]');
+  });
+
+  it('handles other arrays with JSON stringification', () => {
+    const result = formatSSE('test-event', { other: [1, 2, 3] });
+    expect(result).toContain('data: other [1,2,3]');
+  });
 });
 
 describe('createEventFactory', () => {

@@ -1,5 +1,5 @@
 import { ExecuteScriptOptions, ExecuteScriptEvent } from '../../types';
-import { createEventFactory } from '../utils';
+import { createEventFactory, formatSSE } from '../utils';
 
 /**
  * Creates an event for executing JavaScript code on the client side.
@@ -48,29 +48,12 @@ export default createEventFactory<ExecuteScriptOptions>(
       type: 'datastar-execute-script',
       ...options,
       format() {
-        const lines = [`event: ${this.type}`];
-        
-        // Add autoRemove if specified
-        if (this.autoRemove !== undefined && this.autoRemove !== null) {
-          lines.push(`data: autoRemove ${this.autoRemove}`);
-        }
-        
-        // Add each attribute as a separate line
-        this.attributes.forEach(attr => {
-          lines.push(`data: attributes ${attr.name} ${attr.value}`);
+        return formatSSE(this.type, {
+          autoRemove: this.autoRemove,
+          attributes: this.attributes,
+          scripts: this.scripts,
+          retry: this.retry
         });
-        
-        // Add each script as a separate line
-        this.scripts.forEach(script => {
-          lines.push(`data: script ${script}`);
-        });
-        
-        // Add retry if specified
-        if (this.retry !== undefined && this.retry !== null) {
-          lines.push(`retry: ${this.retry}`);
-        }
-        
-        return lines.join('\n') + '\n\n';
       }
     })
   }

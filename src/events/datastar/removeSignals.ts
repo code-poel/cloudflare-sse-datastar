@@ -1,5 +1,5 @@
 import { RemoveSignalsOptions, RemoveSignalsEvent } from '../../types';
-import { createEventFactory } from '../utils';
+import { createEventFactory, formatSSE } from '../utils';
 
 /**
  * Creates an event for removing signals from client-side state.
@@ -28,19 +28,10 @@ export default createEventFactory<RemoveSignalsOptions>(
       type: 'datastar-remove-signals',
       ...options,
       format() {
-        const lines = [`event: ${this.type}`];
-        
-        // Add each path as a separate line
-        this.paths.forEach(path => {
-          lines.push(`data: paths ${path}`);
+        return formatSSE(this.type, {
+          paths: this.paths,
+          retry: this.retry
         });
-        
-        // Add retry if specified
-        if (this.retry !== undefined && this.retry !== null) {
-          lines.push(`retry: ${this.retry}`);
-        }
-        
-        return lines.join('\n') + '\n\n';
       }
     })
   }
