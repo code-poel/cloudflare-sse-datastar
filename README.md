@@ -23,9 +23,6 @@ A Cloudflare Worker implementation of Server-Sent Events (SSE). This project imp
 
 ### Demo Frontend
 
-<div style="display: flex; gap: 2rem; align-items: start;">
-<div>
-
 The project includes a demo frontend that showcases all the major features of the SSE implementation. The demo provides interactive examples of:
 
 - Real-time clock updates using repeating events
@@ -37,13 +34,7 @@ The project includes a demo frontend that showcases all the major features of th
 
 You can run the demo locally by following the development instructions below.
 
-</div>
-<div>
-
 ![Demo Frontend Screenshot](public/demo-screenshot.png)
-
-</div>
-</div>
 
 ## Dependencies
 
