@@ -2,7 +2,7 @@
 
 A Cloudflare Worker implementation of Server-Sent Events (SSE). This project implements Datastar's SSE protocol, includes Mustache for simple templating and uses a minimalist Cloudflare router library.  The purpose of this project is to test the viability of using Cloudflare workers to drive a Datastar website.  This is bare-bones.  Future updates will focus on:
 
-- Driving live Supabase database updates out through Server Side Events via a long-running connection
+- Streaming live Supabase database updates through SSE out to a frontend via a long-running connection
 - Integration with Cloudflare Pub/Sub or NATS
 - Some Ai experimentation (why not, it's all the rage)
 
