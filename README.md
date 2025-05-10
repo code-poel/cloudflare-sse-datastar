@@ -21,7 +21,7 @@ You can run the demo locally by following the development instructions below.
 
 ### Custom Utilities
 
-#### atastar Specific
+#### Datastar Specific
 - `mergeFragments`: Utility for merging HTML fragments with client-side DOM
 - `mergeSignals`: Utility for managing client-side state updates
 - `removeFragments`: Utility for removing HTML elements from the DOM
