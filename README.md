@@ -21,7 +21,7 @@ You can run the demo locally by following the development instructions below.
 
 ### Custom Utilities
 
-#### Datastar Specific [SSE Events Documentation](https://data-star.dev/reference/sse_events)
+#### Datastar Specific: [https://data-star.dev/reference/sse_events](https://data-star.dev/reference/sse_events)
 - `mergeFragments`: Merges one or more fragments into the DOM.
 - `mergeSignals`: Updates the signals with new values.
 - `removeFragments`: Removes one or more HTML fragments that match the provided selector from the DOM.
