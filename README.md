@@ -105,7 +105,18 @@ The `/heartbeat` endpoint demonstrates this with a custom event that:
 - Implements a custom `format()` method
 - Includes repeating functionality
 
-## Fragment Types
+## Available Endpoints
+
+### /merge-fragments
+Updates HTML content with static content.
+```typescript
+const event = mergeFragments({
+  fragment: '<div>Static content</div>',
+  selector: '#listing'
+});
+```
+
+#### Fragment Types
 
 The `fragment` property in `mergeFragments` can be either:
 - A string: For static content that doesn't change (evaluated once when the event is created)
@@ -124,17 +135,6 @@ Important notes about dynamic fragments:
 2. Use for content that needs to be fresh (clocks, counters, real-time data)
 3. Can be combined with repeating events for periodic updates
 4. The function should be pure and fast, as it may be called frequently
-
-## Available Endpoints
-
-### /merge-fragments
-Updates HTML content with static content.
-```typescript
-const event = mergeFragments({
-  fragment: '<div>Static content</div>',
-  selector: '#listing'
-});
-```
 
 ### /merge-fragments-repeating
 Updates HTML content with dynamic content that changes every second.
@@ -218,6 +218,8 @@ npm install
 # Run locally
 npm run dev
 
+# Visit Demo Frontend @ http://localhost:8787/
+
 # Run tests
 npm test
 
@@ -229,45 +231,4 @@ npm run test:coverage
 
 # Deploy to Cloudflare
 npm run deploy
-```
-
-## Testing
-
-The project uses Vitest for testing, providing a fast and efficient testing environment for Cloudflare Workers. The test suite includes comprehensive coverage of all SSE event types and edge cases.
-
-### Test Structure
-
-Tests are organized by feature in the `test` directory:
-- `index.spec.ts`: Main router and endpoint tests
-- `mergeFragments.spec.ts`: Fragment merging functionality
-- `mergeSignals.spec.ts`: Signal state management
-- `removeFragments.spec.ts`: Fragment removal
-- `removeSignals.spec.ts`: Signal removal
-- `executeScript.spec.ts`: Script execution
-- `recurring.spec.ts`: Repeating event functionality
-
-### Test Coverage
-
-The test suite provides comprehensive coverage of:
-- All SSE event types and their formats
-- Dynamic content generation
-- Repeating events and intervals
-- Stream handling and cleanup
-- Error cases and edge conditions
-- Response headers and content types
-
-### Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode (for development)
-npm run test:watch
-
-# Run tests with coverage report
-npm run test:coverage
-
-# Run specific test file
-npm test test/mergeFragments.spec.ts
 ```
