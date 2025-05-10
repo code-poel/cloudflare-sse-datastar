@@ -18,18 +18,26 @@ import { DatastarRemoveFragmentsEvent } from '../../types';
  * 
  * @param options - Configuration for the remove fragments event
  * @param options.selector - CSS selector for the elements to remove
+ * @param options.retry - Retry count for the event
  * @returns A remove fragments event
  */
 export default function removeFragments({ 
-  selector, 
+  selector,
+  retry = null
 }: Omit<DatastarRemoveFragmentsEvent, 'type' | 'format'>): DatastarRemoveFragmentsEvent {
   return {
     type: 'datastar-remove-fragments',
     selector,
+    retry,
     format() {
+      const options = [
+        'data: selector ' + this.selector,
+        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
+      ].filter(Boolean);
+
       return [
         'event: datastar-remove-fragments',
-        'data: selector ' + this.selector
+        ...options
       ].join('\n') + '\n\n';
     }
   };

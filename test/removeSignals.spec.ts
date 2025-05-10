@@ -30,6 +30,31 @@ describe('removeSignals', () => {
     expect(event.format()).toContain('data: paths deeply.nested.path');
   });
 
+  it('handles retry field correctly', () => {
+    // Test with retry specified
+    const eventWithRetry = removeSignals({
+      paths: ['foo'],
+      retry: 5000
+    });
+
+    expect(eventWithRetry.format()).toContain('retry: 5000');
+
+    // Test without retry specified
+    const eventWithoutRetry = removeSignals({
+      paths: ['foo']
+    });
+
+    expect(eventWithoutRetry.format()).not.toContain('retry:');
+
+    // Test with retry explicitly set to null
+    const eventWithNullRetry = removeSignals({
+      paths: ['foo'],
+      retry: null
+    });
+
+    expect(eventWithNullRetry.format()).not.toContain('retry:');
+  });
+
   it('works with repeating events', () => {
     const event = removeSignals({
       paths: ['foo']

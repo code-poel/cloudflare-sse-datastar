@@ -36,6 +36,8 @@ export interface Event {
     /** The original event to repeat (if using repeatingEvent helper) */
     originalEvent: Event | null;
   };
+  /** Optional retry time in milliseconds for reconnection */
+  retry?: number;
 }
 
 /**

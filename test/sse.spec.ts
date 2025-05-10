@@ -136,4 +136,35 @@ describe('SSE Response', () => {
     // Clean up
     await reader.cancel();
   });
+
+  it('includes retry field when specified', async () => {
+    const mockEvent = {
+      type: 'test-event',
+      retry: 5000,
+      format() {
+        const lines = [
+          'event: test-event',
+          'data: test data'
+        ];
+        if (this.retry !== undefined) {
+          lines.push(`retry: ${this.retry}`);
+        }
+        return lines.join('\n') + '\n\n';
+      }
+    };
+
+    const response = createSSEResponse([mockEvent]);
+    const reader = response.body.getReader();
+    
+    // Read the first chunk
+    const { value } = await reader.read();
+    const text = new TextDecoder().decode(value);
+    
+    expect(text).toContain('event: test-event');
+    expect(text).toContain('data: test data');
+    expect(text).toContain('retry: 5000');
+    
+    // Clean up
+    await reader.cancel();
+  });
 }); 

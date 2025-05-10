@@ -31,4 +31,25 @@ describe('removeFragments', () => {
     expect(repeating._repeating?.frequency).toBe(1000);
     expect(repeating._repeating?.originalEvent).toBe(event);
   });
+
+  it('handles retry field correctly', () => {
+    // Test with retry specified
+    const eventWithRetry = removeFragments({
+      selector: '#target',
+      retry: 5000
+    });
+
+    expect(eventWithRetry.format()).toContain('event: datastar-remove-fragments');
+    expect(eventWithRetry.format()).toContain('data: selector #target');
+    expect(eventWithRetry.format()).toContain('retry: 5000');
+
+    // Test without retry specified
+    const eventWithoutRetry = removeFragments({
+      selector: '#target'
+    });
+
+    expect(eventWithoutRetry.format()).toContain('event: datastar-remove-fragments');
+    expect(eventWithoutRetry.format()).toContain('data: selector #target');
+    expect(eventWithoutRetry.format()).not.toContain('retry:');
+  });
 }); 

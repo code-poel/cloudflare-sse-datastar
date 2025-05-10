@@ -56,6 +56,31 @@ describe('mergeSignals', () => {
     expect(event.format()).toContain('data: onlyIfMissing true');
   });
 
+  it('handles retry field correctly', () => {
+    // Test with retry specified
+    const eventWithRetry = mergeSignals({
+      signals: { foo: 'bar' },
+      retry: 5000
+    });
+
+    expect(eventWithRetry.format()).toContain('retry: 5000');
+
+    // Test without retry specified
+    const eventWithoutRetry = mergeSignals({
+      signals: { foo: 'bar' }
+    });
+
+    expect(eventWithoutRetry.format()).not.toContain('retry:');
+
+    // Test with retry explicitly set to null
+    const eventWithNullRetry = mergeSignals({
+      signals: { foo: 'bar' },
+      retry: null
+    });
+
+    expect(eventWithNullRetry.format()).not.toContain('retry:');
+  });
+
   it('works with repeating events', () => {
     const event = mergeSignals({
       signals: () => ({

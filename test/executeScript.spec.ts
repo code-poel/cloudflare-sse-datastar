@@ -52,6 +52,34 @@ describe('executeScript', () => {
     expect(format).toContain('data: attributes defer true');
   });
 
+  it('handles retry field correctly', () => {
+    // Test with retry specified
+    const eventWithRetry = executeScript({
+      scripts: ['console.log("test")'],
+      attributes: [],
+      retry: 5000
+    });
+
+    expect(eventWithRetry.format()).toContain('retry: 5000');
+
+    // Test without retry specified
+    const eventWithoutRetry = executeScript({
+      scripts: ['console.log("test")'],
+      attributes: []
+    });
+
+    expect(eventWithoutRetry.format()).not.toContain('retry:');
+
+    // Test with retry explicitly set to null
+    const eventWithNullRetry = executeScript({
+      scripts: ['console.log("test")'],
+      attributes: [],
+      retry: null
+    });
+
+    expect(eventWithNullRetry.format()).not.toContain('retry:');
+  });
+
   it('works with repeating events', () => {
     const event = executeScript({
       scripts: ['console.log("test")'],

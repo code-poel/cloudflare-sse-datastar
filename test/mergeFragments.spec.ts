@@ -55,6 +55,34 @@ describe('mergeFragments', () => {
     expect(event.format()).toContain('data: useViewTransition true');
   });
 
+  it('handles retry field correctly', () => {
+    // Test with retry specified
+    const eventWithRetry = mergeFragments({
+      fragment: '<div>Test</div>',
+      selector: '#target',
+      retry: 5000
+    });
+
+    expect(eventWithRetry.format()).toContain('retry: 5000');
+
+    // Test without retry specified
+    const eventWithoutRetry = mergeFragments({
+      fragment: '<div>Test</div>',
+      selector: '#target'
+    });
+
+    expect(eventWithoutRetry.format()).not.toContain('retry:');
+
+    // Test with retry explicitly set to null
+    const eventWithNullRetry = mergeFragments({
+      fragment: '<div>Test</div>',
+      selector: '#target',
+      retry: null
+    });
+
+    expect(eventWithNullRetry.format()).not.toContain('retry:');
+  });
+
   it('works with repeating events', () => {
     const event = mergeFragments({
       fragment: () => `<div>${new Date().toLocaleTimeString()}</div>`,

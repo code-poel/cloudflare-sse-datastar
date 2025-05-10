@@ -43,6 +43,7 @@ data: fragments <minified-html>
 data: selector <css-selector>
 data: mergeMode <mode>
 data: useViewTransition <boolean>
+retry: <milliseconds>
 ```
 
 ### Merge Signals
@@ -50,12 +51,14 @@ data: useViewTransition <boolean>
 event: datastar-merge-signals
 data: signals <json-string>
 data: onlyIfMissing <boolean>
+retry: <milliseconds>
 ```
 
 ### Remove Fragments
 ```
 event: datastar-remove-fragments
 data: selector <css-selector>
+retry: <milliseconds>
 ```
 
 ### Remove Signals
@@ -63,6 +66,7 @@ data: selector <css-selector>
 event: datastar-remove-signals
 data: paths <path1>
 data: paths <path2>
+retry: <milliseconds>
 ```
 
 ### Execute Script
@@ -71,6 +75,7 @@ event: datastar-execute-script
 data: autoRemove <boolean>
 data: attributes <name> <value>
 data: script <javascript-code>
+retry: <milliseconds>
 ```
 
 ## Implementation Details
@@ -80,6 +85,23 @@ All HTML fragments pushed through the `mergeFragments` event type are automatica
 - Remove unnecessary whitespace
 - Preserve essential whitespace in text content
 - Maintain HTML structure and functionality
+
+### Connection Retry Behavior
+All event types support an optional `retry` field that specifies the number of milliseconds to wait before attempting to reconnect if the connection is lost. This follows the Server-Sent Events specification for reconnection handling.
+
+```typescript
+// Example with retry configuration
+const event = mergeFragments({
+  fragment: '<div>Test</div>',
+  selector: '#target',
+  retry: 5000  // Will retry connection after 5 seconds if disconnected
+});
+```
+
+The retry field is optional and can be:
+- A number: Specifies milliseconds to wait before retrying
+- null/undefined: No retry will be attempted
+- Not specified: No retry will be attempted
 
 ### Custom Event Types
 While we provide factory functions for common event types, you can create custom events by implementing the `Event` interface:
@@ -107,7 +129,8 @@ Updates HTML content with static content.
 ```typescript
 const event = mergeFragments({
   fragment: '<div>Static content</div>',
-  selector: '#listing'
+  selector: '#listing',
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 ```
 
@@ -136,7 +159,8 @@ Updates HTML content with dynamic content that changes every second.
 ```typescript
 const event = mergeFragments({
   fragment: () => `<div id="clock">${new Date().toLocaleTimeString()}</div>`,
-  selector: '#clock'
+  selector: '#clock',
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 const repeatEvent = repeatingEvent(event, 1000);
 ```
@@ -147,7 +171,8 @@ Updates client-side state.
 const event = mergeSignals({
   signals: {
     foo: 'merged'
-  }
+  },
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 ```
 
@@ -155,7 +180,8 @@ const event = mergeSignals({
 Removes HTML elements from the DOM.
 ```typescript
 const removeEvent = removeFragments({
-  selector: '#listing'
+  selector: '#listing',
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 ```
 
@@ -163,7 +189,8 @@ const removeEvent = removeFragments({
 Removes signals from client-side state.
 ```typescript
 const removeEvent = removeSignals({
-  paths: ['foo', 'nested.baz']
+  paths: ['foo', 'nested.baz'],
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 ```
 
@@ -179,7 +206,8 @@ const executeEvent = executeScript({
   scripts: [
     'console.log("Hello, world!")',
     'console.log("Here is a second console line to output!")'
-  ]
+  ],
+  retry: 5000  // Optional: retry after 5 seconds if disconnected
 });
 ```
 

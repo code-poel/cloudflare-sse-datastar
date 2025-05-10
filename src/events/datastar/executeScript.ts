@@ -24,27 +24,39 @@ import { DatastarExecuteScriptEvent } from "../../types";
  *   ]
  * });
  * 
+ * @example
+ * // With retry configuration
+ * executeScript({
+ *   scripts: ['console.log("test")'],
+ *   attributes: [],
+ *   retry: 5000  // Will retry connection after 5 seconds if disconnected
+ * });
+ * 
  * @param options - Configuration for the execute script event
  * @param options.autoRemove - Whether to remove the script element after execution
  * @param options.attributes - Array of attributes to add to the script element
  * @param options.scripts - Array of JavaScript code lines to execute
+ * @param options.retry - Number of milliseconds to wait before retrying connection if disconnected. If null or undefined, no retry will be attempted.
  * @returns An execute script event
  */
 export default function executeScript({ 
   autoRemove = null,
   attributes = [],
-  scripts
+  scripts,
+  retry = null
 }: Omit<DatastarExecuteScriptEvent, 'type' | 'format'>): DatastarExecuteScriptEvent {
   return {
     type: 'datastar-execute-script',
     autoRemove,
     attributes,
     scripts,
+    retry,
     format() {
       const options = [
-        this.autoRemove !== null && `data: autoRemove ${this.autoRemove}`,
+        (this.autoRemove === null || this.autoRemove === undefined) ? null : `data: autoRemove ${this.autoRemove}`,
         ...this.attributes.map(attr => `data: attributes ${attr.name} ${attr.value}`),
-        ...this.scripts.map(script => `data: script ${script}`)
+        ...this.scripts.map(script => `data: script ${script}`),
+        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
       ].filter(Boolean);
 
       return [
