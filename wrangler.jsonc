@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "sse-router-experiment",
+	"name": "cloudflare-sse-datastar",
 	"compatibility_date": "2025-05-09",
 	"main": "src/index.ts",
 	"assets": {
