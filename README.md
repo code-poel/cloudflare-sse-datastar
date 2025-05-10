@@ -102,7 +102,7 @@ The `/heartbeat` endpoint demonstrates this with a custom event that:
 
 ## Available Datastar Example Endpoints
 
-### /merge-fragments
+### GET /merge-fragments
 Updates HTML content with static content.
 ```typescript
 const event = mergeFragments({
@@ -131,7 +131,7 @@ Important notes about dynamic fragments:
 3. Can be combined with repeating events for periodic updates
 4. The function should be pure and fast, as it may be called frequently
 
-### /merge-fragments-repeating
+### GET /merge-fragments-repeating
 Updates HTML content with dynamic content that changes every second.
 ```typescript
 const event = mergeFragments({
@@ -141,7 +141,7 @@ const event = mergeFragments({
 const repeatEvent = repeatingEvent(event, 1000);
 ```
 
-### /merge-signals
+### GET /merge-signals
 Updates client-side state.
 ```typescript
 const event = mergeSignals({
@@ -151,7 +151,7 @@ const event = mergeSignals({
 });
 ```
 
-### /remove-fragments
+### GET /remove-fragments
 Removes HTML elements from the DOM.
 ```typescript
 const removeEvent = removeFragments({
@@ -159,7 +159,7 @@ const removeEvent = removeFragments({
 });
 ```
 
-### /remove-signals
+### GET /remove-signals
 Removes signals from client-side state.
 ```typescript
 const removeEvent = removeSignals({
@@ -167,7 +167,7 @@ const removeEvent = removeSignals({
 });
 ```
 
-### /execute-script
+### GET /execute-script
 Executes JavaScript code on the client side.
 ```typescript
 const executeEvent = executeScript({
@@ -183,7 +183,7 @@ const executeEvent = executeScript({
 });
 ```
 
-### /heartbeat
+### GET /heartbeat
 Sends a timestamp every second to keep the connection alive. This is an example of an ad-hoc Event type that doesn't use our standard event factories. It's particularly useful in the Cloudflare Workers environment where connections might be closed due to:
 - CPU usage limits
 - Connection timeouts
