@@ -1,4 +1,5 @@
-import { DatastarExecuteScriptEvent } from "../../types";
+import { ExecuteScriptOptions, ExecuteScriptEvent } from '../../types';
+import { createEventFactory } from '../utils';
 
 /**
  * Creates an event for executing JavaScript code on the client side.
@@ -39,30 +40,38 @@ import { DatastarExecuteScriptEvent } from "../../types";
  * @param options.retry - Number of milliseconds to wait before retrying connection if disconnected. If null or undefined, no retry will be attempted.
  * @returns An execute script event
  */
-export default function executeScript({ 
-  autoRemove = null,
-  attributes = [],
-  scripts,
-  retry = null
-}: Omit<DatastarExecuteScriptEvent, 'type' | 'format'>): DatastarExecuteScriptEvent {
-  return {
-    type: 'datastar-execute-script',
-    autoRemove,
-    attributes,
-    scripts,
-    retry,
-    format() {
-      const options = [
-        (this.autoRemove === null || this.autoRemove === undefined) ? null : `data: autoRemove ${this.autoRemove}`,
-        ...this.attributes.map(attr => `data: attributes ${attr.name} ${attr.value}`),
-        ...this.scripts.map(script => `data: script ${script}`),
-        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
-      ].filter(Boolean);
-
-      return [
-        'event: datastar-execute-script',
-        ...options
-      ].join('\n') + '\n\n';
-    }
-  };
-}
+export default createEventFactory<ExecuteScriptOptions>(
+  'datastar-execute-script',
+  {
+    required: ['scripts'],
+    format: (options) => ({
+      type: 'datastar-execute-script',
+      ...options,
+      format() {
+        const lines = [`event: ${this.type}`];
+        
+        // Add autoRemove if specified
+        if (this.autoRemove !== undefined && this.autoRemove !== null) {
+          lines.push(`data: autoRemove ${this.autoRemove}`);
+        }
+        
+        // Add each attribute as a separate line
+        this.attributes.forEach(attr => {
+          lines.push(`data: attributes ${attr.name} ${attr.value}`);
+        });
+        
+        // Add each script as a separate line
+        this.scripts.forEach(script => {
+          lines.push(`data: script ${script}`);
+        });
+        
+        // Add retry if specified
+        if (this.retry !== undefined && this.retry !== null) {
+          lines.push(`retry: ${this.retry}`);
+        }
+        
+        return lines.join('\n') + '\n\n';
+      }
+    })
+  }
+);

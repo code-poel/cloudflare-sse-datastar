@@ -1,5 +1,6 @@
+import { MergeFragmentsOptions, MergeFragmentsEvent } from '../../types';
+import { createEventFactory, formatSSE } from '../utils';
 import minifyHtml from '../../minify';
-import { DatastarMergeFragmentsEvent, FragmentGenerator } from '../../types';
 
 /**
  * Creates an event for updating HTML content on the client side.
@@ -35,38 +36,26 @@ import { DatastarMergeFragmentsEvent, FragmentGenerator } from '../../types';
  * @param options.retry - Number of milliseconds to wait before retrying connection if disconnected. If null or undefined, no retry will be attempted.
  * @returns A merge fragments event
  */
-export default function mergeFragments({ 
-  fragment, 
-  selector = null, 
-  mergeMode = null,
-  useViewTransition = null,
-  retry = null
-}: Omit<DatastarMergeFragmentsEvent, 'type' | 'format'>): DatastarMergeFragmentsEvent {
-  return {
-    type: 'datastar-merge-fragments',
-    fragment,
-    selector,
-    mergeMode,
-    useViewTransition,
-    retry,
-    format() {
-      const options = [
-        this.selector && `data: selector ${this.selector}`,
-        this.mergeMode && `data: mergeMode ${this.mergeMode}`,
-        this.useViewTransition && `data: useViewTransition ${this.useViewTransition}`,
-        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
-      ].filter(Boolean);
+export default createEventFactory<MergeFragmentsOptions>(
+  'datastar-merge-fragments',
+  {
+    required: ['fragment'],
+    format: (options) => ({
+      type: 'datastar-merge-fragments',
+      ...options,
+      format() {
+        const fragmentContent = typeof this.fragment === 'function' 
+          ? this.fragment() 
+          : this.fragment;
 
-      // Get the fragment content, evaluating the function if needed
-      const fragmentContent = typeof this.fragment === 'function' 
-        ? (this.fragment as FragmentGenerator)() 
-        : this.fragment;
-
-      return [
-        'event: datastar-merge-fragments',
-        'data: fragments ' + minifyHtml(fragmentContent),
-        ...options
-      ].join('\n') + '\n\n';
-    }
-  };
-}
+        return formatSSE(this.type, {
+          fragments: minifyHtml(fragmentContent),
+          selector: this.selector,
+          mergeMode: this.mergeMode,
+          useViewTransition: this.useViewTransition,
+          retry: this.retry
+        });
+      }
+    })
+  }
+);

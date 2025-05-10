@@ -20,30 +20,29 @@ describe('mergeSignals', () => {
 
   it('handles dynamic signals', async () => {
     const event = mergeSignals({
-      signals: () => ({
-        timestamp: new Date().toLocaleTimeString()
-      })
+      signals: {
+        timestamp: () => new Date().toLocaleTimeString()
+      }
     });
 
-    // Get the first signal value immediately
-    const firstSignal = typeof event.signals === 'function' ? event.signals() : event.signals;
+    // Get the first signal value
     const firstFormat = event.format();
+    const firstMatch = firstFormat.match(/data: signals (.*)/);
 
     // Wait a bit to ensure time changes
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Get the second signal value after waiting
-    const secondSignal = typeof event.signals === 'function' ? event.signals() : event.signals;
     const secondFormat = event.format();
-
-    // Extract the actual timestamp values from the formatted strings
-    const firstMatch = firstFormat.match(/data: signals (.*)\n/);
-    const secondMatch = secondFormat.match(/data: signals (.*)\n/);
+    const secondMatch = secondFormat.match(/data: signals (.*)/);
 
     expect(firstMatch).toBeTruthy();
     expect(secondMatch).toBeTruthy();
 
-    expect(firstSignal.timestamp).not.toBe(secondSignal.timestamp);
+    const firstSignals = JSON.parse(firstMatch![1]);
+    const secondSignals = JSON.parse(secondMatch![1]);
+
+    expect(firstSignals.timestamp).not.toBe(secondSignals.timestamp);
     expect(firstFormat).toContain('event: datastar-merge-signals');
   });
 
@@ -83,9 +82,9 @@ describe('mergeSignals', () => {
 
   it('works with repeating events', () => {
     const event = mergeSignals({
-      signals: () => ({
-        timestamp: new Date().toLocaleTimeString()
-      })
+      signals: {
+        timestamp: () => new Date().toLocaleTimeString()
+      }
     });
 
     const repeating = repeatingEvent(event, 1000);

@@ -22,72 +22,87 @@ export type MergeMode = 'morph' | 'inner' | 'outer' | 'prepend' | 'append' | 'be
 export type FragmentGenerator = () => string;
 
 /**
- * Base interface for all SSE events
+ * Base options interface for all events
  */
-export interface Event {
-  /** The type of event (used for client-side event handling) */
-  type: string;
-  /** Formats the event for SSE transmission */
-  format(): string;
-  /** Optional configuration for repeating events */
-  _repeating?: {
-    /** Frequency in milliseconds between repeats */
-    frequency: number;
-    /** The original event to repeat (if using repeatingEvent helper) */
-    originalEvent: Event | null;
-  };
-  /** Optional retry time in milliseconds for reconnection */
+export interface BaseEventOptions {
   retry?: number;
 }
 
 /**
- * Event for updating HTML content on the client side.
- * The fragment can be either static HTML or a function that generates HTML dynamically.
+ * Base interface for all SSE events
  */
-export interface DatastarMergeFragmentsEvent extends Event {
-  type: 'datastar-merge-fragments';
-  /** 
-   * The HTML content to insert.
-   * - Use a string for static content that doesn't change
-   * - Use a function for dynamic content that needs to be re-evaluated on each event
-   */
+export interface BaseEvent<T extends string> {
+  type: T;
+  format(): string;
+  _repeating?: {
+    frequency: number;
+    originalEvent: BaseEvent<T> | null;
+  };
+}
+
+/**
+ * Event for updating HTML content on the client side.
+ */
+export interface MergeFragmentsOptions extends BaseEventOptions {
   fragment: string | FragmentGenerator;
-  /** CSS selector for the target element to update */
   selector?: string;
-  /** How to merge the new content with existing content */
   mergeMode?: MergeMode;
-  /** Whether to use View Transitions API for the update */
+  useViewTransition?: boolean;
+}
+
+export interface MergeFragmentsEvent extends BaseEvent<'datastar-merge-fragments'> {
+  fragment: string | FragmentGenerator;
+  selector?: string;
+  mergeMode?: MergeMode;
   useViewTransition?: boolean;
 }
 
 /**
  * Event for updating client-side state
  */
-export interface DatastarMergeSignalsEvent extends Event {
-  type: 'datastar-merge-signals';
-  /** The state object to merge with client-side state */
-  signals: object;
-  /** Only update signals that don't already exist */
+export interface MergeSignalsOptions extends BaseEventOptions {
+  signals: Record<string, any>;
   onlyIfMissing?: boolean;
 }
 
-export interface DatastarRemoveFragmentsEvent extends Event {
-  type: 'datastar-remove-fragments';
+export interface MergeSignalsEvent extends BaseEvent<'datastar-merge-signals'> {
+  signals: Record<string, any>;
+  onlyIfMissing?: boolean;
+}
+
+/**
+ * Event for removing HTML elements
+ */
+export interface RemoveFragmentsOptions extends BaseEventOptions {
   selector: string;
 }
 
-export interface DatastarRemoveSignalsEvent extends Event {
-  type: 'datastar-remove-signals';
-  /** Array of signal paths to remove from client-side state */
+export interface RemoveFragmentsEvent extends BaseEvent<'datastar-remove-fragments'> {
+  selector: string;
+}
+
+/**
+ * Event for removing signals from client-side state
+ */
+export interface RemoveSignalsOptions extends BaseEventOptions {
   paths: Array<string>;
 }
 
-export interface DatastarExecuteScriptEvent extends Event {
-  type: 'datastar-execute-script';
-  /** Whether to remove the script element after execution */
+export interface RemoveSignalsEvent extends BaseEvent<'datastar-remove-signals'> {
+  paths: Array<string>;
+}
+
+/**
+ * Event for executing JavaScript code
+ */
+export interface ExecuteScriptOptions extends BaseEventOptions {
   autoRemove?: boolean;
-  /** Array of attributes to add to the script element */
   attributes: Array<{ name: string; value: string | boolean }>;
-  /** Array of JavaScript code lines to execute */
+  scripts: Array<string>;
+}
+
+export interface ExecuteScriptEvent extends BaseEvent<'datastar-execute-script'> {
+  autoRemove?: boolean;
+  attributes: Array<{ name: string; value: string | boolean }>;
   scripts: Array<string>;
 }

@@ -1,4 +1,5 @@
-import { DatastarRemoveFragmentsEvent } from '../../types';
+import { RemoveFragmentsOptions, RemoveFragmentsEvent } from '../../types';
+import { createEventFactory, formatSSE } from '../utils';
 
 /**
  * Creates an event for removing HTML elements from the DOM.
@@ -17,28 +18,21 @@ import { DatastarRemoveFragmentsEvent } from '../../types';
  * });
  * 
  * @param options - Configuration for the remove fragments event
- * @param options.selector - CSS selector for the elements to remove
- * @param options.retry - Retry count for the event
  * @returns A remove fragments event
  */
-export default function removeFragments({ 
-  selector,
-  retry = null
-}: Omit<DatastarRemoveFragmentsEvent, 'type' | 'format'>): DatastarRemoveFragmentsEvent {
-  return {
-    type: 'datastar-remove-fragments',
-    selector,
-    retry,
-    format() {
-      const options = [
-        'data: selector ' + this.selector,
-        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
-      ].filter(Boolean);
-
-      return [
-        'event: datastar-remove-fragments',
-        ...options
-      ].join('\n') + '\n\n';
-    }
-  };
-}
+export default createEventFactory<RemoveFragmentsOptions>(
+  'datastar-remove-fragments',
+  {
+    required: ['selector'],
+    format: (options) => ({
+      type: 'datastar-remove-fragments',
+      ...options,
+      format() {
+        return formatSSE(this.type, {
+          selector: this.selector,
+          retry: this.retry
+        });
+      }
+    })
+  }
+);

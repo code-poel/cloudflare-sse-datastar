@@ -1,4 +1,5 @@
-import { DatastarMergeSignalsEvent } from '../../types';
+import { MergeSignalsOptions, MergeSignalsEvent } from '../../types';
+import { createEventFactory, formatSSE } from '../utils';
 
 /**
  * Creates an event for updating client-side state.
@@ -37,27 +38,26 @@ import { DatastarMergeSignalsEvent } from '../../types';
  * @param options.retry - Number of milliseconds to wait before retrying connection if disconnected. If null or undefined, no retry will be attempted.
  * @returns A merge signals event
  */
-export default function mergeSignals({ 
-  signals, 
-  onlyIfMissing = null,
-  retry = null
-}: Omit<DatastarMergeSignalsEvent, 'type' | 'format'>): DatastarMergeSignalsEvent {
-  return {
-    type: 'datastar-merge-signals',
-    signals,
-    onlyIfMissing,
-    retry,
-    format() {
-      const options = [
-        (this.onlyIfMissing === null || this.onlyIfMissing === undefined) ? null : 'data: onlyIfMissing true',
-        (this.retry === null || this.retry === undefined) ? null : `retry: ${this.retry}`
-      ].filter(Boolean);
+export default createEventFactory<MergeSignalsOptions>(
+  'datastar-merge-signals',
+  {
+    required: ['signals'],
+    format: (options) => ({
+      type: 'datastar-merge-signals',
+      ...options,
+      format() {
+        // Evaluate any function values in the signals object
+        const evaluatedSignals = Object.entries(this.signals).reduce((acc, [key, value]) => {
+          acc[key] = typeof value === 'function' ? value() : value;
+          return acc;
+        }, {} as Record<string, any>);
 
-      return [
-        'event: datastar-merge-signals',
-        'data: signals ' + JSON.stringify(this.signals),
-        ...options
-      ].join('\n') + '\n\n';
-    }
-  };
-}
+        return formatSSE(this.type, {
+          signals: JSON.stringify(evaluatedSignals),
+          onlyIfMissing: this.onlyIfMissing,
+          retry: this.retry
+        });
+      }
+    })
+  }
+);

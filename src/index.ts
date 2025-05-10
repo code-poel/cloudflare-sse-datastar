@@ -1,5 +1,5 @@
 import { Router } from '@tsndr/cloudflare-worker-router';
-import { ExtCtx, ExtReq, Event } from './types';
+import { ExtCtx, ExtReq, BaseEvent } from './types';
 import { createSSEResponse } from './sse';
 import mergeFragments from './events/datastar/mergeFragments';
 import mergeSignals from './events/datastar/mergeSignals';
