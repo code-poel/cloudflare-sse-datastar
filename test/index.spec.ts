@@ -41,7 +41,7 @@ describe('SSE Router', () => {
 		expect(response.headers.get('content-type')).toBe('text/event-stream');
 		const text = await response.text();
 		expect(text).toContain('event: datastar-merge-fragments');
-		expect(text).toContain('data: selector #listing');
+		expect(text).toContain('data: fragments <ul id="listing"><li>John</li><li>Jane</li><li>Jim</li><li>Jill</li></ul>');
 	});
 
 	it('handles merge-fragments-repeating endpoint', async () => {
@@ -72,7 +72,7 @@ describe('SSE Router', () => {
 		expect(response.headers.get('content-type')).toBe('text/event-stream');
 		const text = await response.text();
 		expect(text).toContain('event: datastar-merge-signals');
-		expect(text).toContain('data: signals {"foo":"merged"}');
+		expect(text).toContain('data: signals {"foo":"merged","nested":{"baz":"merged"}}');
 	});
 
 	it('handles remove-fragments endpoint', async () => {
@@ -95,7 +95,7 @@ describe('SSE Router', () => {
 		const text = await response.text();
 		expect(text).toContain('event: datastar-remove-signals');
 		expect(text).toContain('data: paths foo');
-		expect(text).toContain('data: paths nested.baz');
+		expect(text).toContain('data: paths nested.bar');
 	});
 
 	it('handles execute-script endpoint', async () => {
@@ -109,7 +109,8 @@ describe('SSE Router', () => {
 		expect(text).toContain('data: autoRemove true');
 		expect(text).toContain('data: attributes type module');
 		expect(text).toContain('data: attributes defer true');
-		expect(text).toContain('data: script console.log("Hello, world!")');
+		expect(text).toContain('data: script console.log("Hello from the execute script event!");');
+		expect(text).toContain('data: script alert(document.getElementById("display-in-alert").textContent);');
 	});
 
 	it('handles heartbeat endpoint', async () => {
@@ -126,6 +127,22 @@ describe('SSE Router', () => {
 		
 		expect(text).toBe(': 12:00:00:123\n\n');
 		
+		// Clean up the stream
+		await reader.cancel();
+	});
+
+	it('handles clock endpoint', async () => {
+		const request = new Request('http://example.com/clock');
+		const response = await worker.fetch(request, mockEnv, mockCtx);
+		
+		expect(response.status).toBe(200);
+		expect(response.headers.get('content-type')).toBe('text/event-stream');
+		// Read the first chunk of the stream
+		const reader = response.body.getReader();
+		const { value } = await reader.read();
+		const text = new TextDecoder().decode(value);
+		expect(text).toContain('event: datastar-merge-fragments');
+		expect(text).toContain('data: fragments <div id="clock">12:00:00:123</div>');
 		// Clean up the stream
 		await reader.cancel();
 	});

@@ -6,6 +6,26 @@
 		<link rel="icon" type="image/png" href="/favicon-32x32.png" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 		<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-beta.11/bundles/datastar.js"></script>
+    <style>
+      /* Custom Scrollbar Styles */
+      ::-webkit-scrollbar {
+        width: 12px;
+        background: #e0e7ff; /* Tailwind blue-100 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #3b82f6; /* Tailwind blue-500 */
+        border-radius: 6px;
+        border: 3px solid #e0e7ff;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #2563eb; /* Tailwind blue-600 */
+      }
+      /* Firefox */
+      html {
+        scrollbar-width: thin;
+        scrollbar-color: #3b82f6 #e0e7ff;
+      }
+    </style>
   </head>
   <body 
 		data-signals="{ debug: false, foo: 'bar', bar: 'baz', nested: { foo: 'bar', bar: 'baz' } }"
@@ -15,16 +35,29 @@
 		<div class="h-dvh mx-5">
 			<header class="h-20 flex items-center justify-between">
 				<h1 class="font-bold text-2xl mt-0">Datastar Demo</h1>
-				<button data-on-click="$debug = !$debug" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
-					Toggle Debug Panel
-				</button>
+				<div class="flex items-center gap-3">
+					<a href="https://github.com/code-poel/cloudflare-sse-datastar" target="_blank" rel="noopener noreferrer" class="bg-blue-100 text-blue-700 font-semibold py-2 px-4 rounded border border-blue-300 hover:bg-blue-200 transition-colors text-sm">GitHub Repo</a>
+					<button data-on-click="$debug = !$debug" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
+						Toggle Debug
+					</button>
+				</div>
 			</header>
 			<div class="flex flex-col md:flex-row md:gap-5 h-[calc(100vh-6rem)]">
-				<main class="flex-auto bg-blue-100 p-5 overflow-x-auto">
-					<h2>Examples</h2>
+				<main class="flex-auto bg-white p-5 overflow-x-auto">
+					<div class="mb-8">
+						<p class="text-base md:text-lg text-gray-700">
+							This project demonstrates a Cloudflare Worker implementation of Server-Sent Events (SSE) using the
+							<a href="https://data-star.dev/" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline hover:text-blue-900">Datastar</a>
+							hypermedia framework, with Mustache for templating and a minimal router. View the source on
+							<a href="https://github.com/code-poel/cloudflare-sse-datastar" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline hover:text-blue-900">GitHub</a>.
+						</p>
+					</div>
+					<h2 class="text-2xl font-semibold mb-6 border-b pb-2">Examples</h2>
+					<div class="space-y-8">
 					<!-- datastar-recurring -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">This is a long-running connection feeding continuous <code>datastar-merge-fragments</code> events to the client.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Repeated Fragment Updates</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">This is a long-running connection feeding continuous <code>datastar-merge-fragments</code> events to the client.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button class="bg-blue-500 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed">
@@ -38,8 +71,9 @@
 					</div>
 					<!-- /datastar-recurring -->
 					<!-- datastar-merge-fragments -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This will render a <code>UL</code> of names.  On the backend, it's leveraging <code>Mustache.js</code> to render the markup.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Merge Fragments Demo</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">Send a request to the server wich will result in an SSE <code>datastar-merge-fragments</code> event being sent to the client.  This will render a <code>UL</code> of names.  On the backend, it's leveraging <code>Mustache.js</code> to render the markup.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button data-on-click="@get('/merge-fragments')" class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
@@ -47,14 +81,15 @@
 								</button>
 							</div>
 							<div class="bg-gray-900 text-gray-100 font-mono p-4 rounded-lg w-full md:w-3/4 border border-gray-700">
-								<div id="listing" class="whitespace-pre"></div>
+								<ul id="listing"><li>Bob</li><li>Bill</li></ul>
 							</div>
 						</div>
 					</div>
 					<!-- /datastar-merge-fragments -->
 					<!-- datastar-remove-fragments -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">Remove the content below using a <code>datastar-remove-fragments</code> event.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Remove Fragments Demo</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">Remove the content below using a <code>datastar-remove-fragments</code> event.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button data-on-click="@get('/remove-fragments')" class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
@@ -68,8 +103,9 @@
 					</div>
 					<!-- /datastar-remove-fragments -->
 					<!-- datastar-merge-signals -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">Send a request to the server wich will result in an SSE <code>datastar-merge-signals</code> event being sent to the client.  This will update the signals on the client which are mirrored below.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Merge Signals Demo</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">Send a request to the server wich will result in an SSE <code>datastar-merge-signals</code> event being sent to the client.  This will update the signals on the client which are mirrored below.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button data-on-click="@get('/merge-signals')" class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
@@ -85,8 +121,9 @@
 					</div>
 					<!-- /datastar-merge-signals -->
 					<!-- datastar-remove-signals -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">Remove the <code>'foo' and 'nested.bar'</code> signals below using a <code>datastar-remove-signals</code> event.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Remove Signals Demo</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">Remove the <code>'foo' and 'nested.bar'</code> signals below using a <code>datastar-remove-signals</code> event.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button data-on-click="@get('/remove-signals')" class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
@@ -102,8 +139,9 @@
 					</div>
 					<!-- /datastar-remove-signals -->
 					<!-- datastar-execute-script -->
-					<div class="my-5 outline-dashed outline-slate-400 p-4 rounded-lg">
-						<p class="mb-5">Execute a script on the client using a <code>datastar-execute-script</code> event.  This will log a message to the console and display the below text inan alert.</p>
+					<div class="shadow-md bg-blue-100 p-6 rounded-lg outline-dashed outline-blue-300">
+						<h3 class="text-lg font-bold mb-2 text-blue-700">Execute Script Demo</h3>
+						<p class="mb-5 max-w-prose mx-auto text-gray-700">Execute a script on the client using a <code>datastar-execute-script</code> event.  This will log a message to the console and display the below text inan alert.</p>
 						<div class="flex flex-col md:flex-row gap-2">
 							<div class="w-full md:w-1/4">
 								<button data-on-click="@get('/execute-script')" class="cursor-pointer bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">
@@ -118,6 +156,7 @@
 						</div>
 					</div>
 					<!-- /datastar-execute-script -->		 
+					</div>
 				</main>
 				<aside class="w-xs min-w-xs max-w-xs bg-slate-100 p-5 text-xs text-green-900 overflow-y-auto" data-show="$debug">
 					<pre data-text="ctx.signals.JSON()" data-on-signal-change="ctx.el.textContent = ctx.signals.JSON()">Signals</pre>

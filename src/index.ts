@@ -26,9 +26,7 @@ function getListingMarkup(): string {
 
 router.get('/merge-fragments', async () => {
   const event = mergeFragments({
-    fragment: getListingMarkup(),
-    selector: '#listing',
-    mergeMode: 'inner'
+    fragment: getListingMarkup()
   });
   return createSSEResponse([event]);
 });
