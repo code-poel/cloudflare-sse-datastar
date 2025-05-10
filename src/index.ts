@@ -63,7 +63,7 @@ router.get('/remove-fragments', async () => {
 
 router.get('/remove-signals', async () => {
   const removeEvent = removeSignals({
-    paths: ['foo', 'nested.baz']
+    paths: ['foo', 'nested.bar']
   });
   return createSSEResponse([removeEvent]);
 });
@@ -76,8 +76,8 @@ router.get('/execute-script', async () => {
       { name: 'defer', value: true }
     ],
     scripts: [
-      'console.log("Hello, world!")',
-      'console.log("Here is a second console line to output!")'
+      'console.log("Hello from the execute script event!");',
+      'alert(document.getElementById("display-in-alert").textContent);'
     ]
   });
   return createSSEResponse([executeEvent]);
