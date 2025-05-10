@@ -21,12 +21,12 @@ You can run the demo locally by following the development instructions below.
 
 ### Custom Utilities
 
-#### Datastar Specific
-- `mergeFragments`: Utility for merging HTML fragments with client-side DOM
-- `mergeSignals`: Utility for managing client-side state updates
-- `removeFragments`: Utility for removing HTML elements from the DOM
-- `removeSignals`: Utility for removing signals from client-side state
-- `executeScript`: Utility for executing JavaScript code on the client side
+#### Datastar Specific [Datastar SSE Events](https://data-star.dev/reference/sse_events)
+- `mergeFragments`: Merges one or more fragments into the DOM.
+- `mergeSignals`: Updates the signals with new values.
+- `removeFragments`: Removes one or more HTML fragments that match the provided selector from the DOM.
+- `removeSignals`: Removes signals that match one or more provided paths.
+- `executeScript`: Executes JavaScript in the browser.
 
 #### Wokrer / SSE Specific
 - `repeatingEvent`: Helper for creating repeating SSE events
